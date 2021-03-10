@@ -60,7 +60,7 @@
 
     <v-row justify="center">
       <v-col cols="12" md="8">
-        <v-simple-table >
+        <v-simple-table v-if="showTable">
           <template v-slot:default>
             <thead>
               <tr>
@@ -76,11 +76,11 @@
                 <td v-for="hour in 8" v-bind:key="hour">
                   {{ hourly_data[(hour - 1) + (8 * index)].count }}
                 </td>
-
               </tr>
             </tbody>
           </template>
         </v-simple-table>
+        <div v-else>No data yet</div>
       </v-col>
     </v-row>
   </v-container>
@@ -98,7 +98,7 @@ export default {
         maxDate: "",
         startDateMenu: false,
         shiftNames: ["Midnight", "Day", "Afternoon"],
-
+        showTable: false,
 
         // values for final query
         machinesSelected: [],
@@ -112,6 +112,7 @@ export default {
     machinesUpdated() {
       if (this.partsSelected.length == 0) {
         this.$store.dispatch("getParts", this.machinesSelected);
+        this.showTable = false
         console.log("machinesUpdated - partsSelected", this.partsSelected)
         console.log("machinesUpdated - machinesSelected", this.machinesSelected)
       }
@@ -119,6 +120,7 @@ export default {
     partsUpdated() {
       if (this.machinesSelected.length == 0) {
         this.$store.dispatch("getMachines", this.partsSelected);
+        this.showTable = false
         console.log("partsUpdated - partsSelected", this.partsSelected)
         console.log("partsUpdated - machinesSelected", this.machinesSelected)
       }
@@ -127,6 +129,7 @@ export default {
       return Array.apply(0, Array(count))
           .map((element, index) => index + start);
     },
+    // TODO:  Move this to the store
     get_data() {
       const isodate= new Date(
           Number(this.startDateVal.slice(0,4)),
@@ -151,6 +154,7 @@ export default {
         console.log("get_data query result:", result)
         this.hourly_data = result['result']
         console.log("hourlydata: ", this.hourly_data)
+        this.showTable = true
       })
     },
   },
@@ -171,4 +175,5 @@ export default {
   }
 }
 // v-date-picker v-menu integration: https://techformist.com/vuetify-input-field-date-picker/
+// TODO: Hide the table when there is no data.
 </script>
