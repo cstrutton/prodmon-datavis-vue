@@ -54,6 +54,7 @@
       </v-col>
       <v-col cols="12" md="4">
         <v-spacer></v-spacer>
+<!--  TODO: disable the button until both machine and part are selected -->
         <v-btn v-on:click="get_data" >Get Data</v-btn>
       </v-col>
     </v-row>
